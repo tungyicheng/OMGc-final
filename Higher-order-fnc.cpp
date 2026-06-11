@@ -1,4 +1,5 @@
 #include<iostream>
+#include <algorithm>
 using namespace std;
 void HI()
 {
@@ -8,9 +9,15 @@ void SAY( void (*func)())
 {
     func();
 }
+bool cmp(int a,int b){
+    return a>b;
+}
 int main()
 {
     SAY(HI);
+    int a[3]={1,2,3};
+    sort(a,a+3,[](int a,int b){return a>b;});
+    cout<<a[0]<<a[1]<<a[2];
     return 0;
 }
 /*
