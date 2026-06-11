@@ -1,0 +1,221 @@
+thank for whitebear first
+and
+https://github.com/whitebear13579/NTOU-MagicTreasureBox/blob/main/1132%20%E5%A4%A7%E4%B8%80%E4%B8%8B%E8%AA%B2%E7%A8%8B/B570132V-%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88%E4%BA%8C%E5%AF%A6%E7%BF%92-%E6%9E%97%E8%87%B4%E5%AE%87/Finalterm/01357101.cpp
+
+and
+
+https://github.com/whitebear13579/NTOU-MagicTreasureBox/blob/main/1132%20%E5%A4%A7%E4%B8%80%E4%B8%8B%E8%AA%B2%E7%A8%8B/B570132V-%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88%E4%BA%8C%E5%AF%A6%E7%BF%92-%E6%9E%97%E8%87%B4%E5%AE%87/Finalterm/%E5%8F%83%E8%80%83%E8%A7%A3%E7%AD%94.cpp
+#include <iostream>
+#include <vector>
+#include <memory>    // 使用 shared_ptr 必須引入此標頭檔
+#include <algorithm> // 使用 std::sort 必須引入此標頭檔
+using namespace std;
+
+// ==========================================
+// 基礎類別：學生 (Student)
+// ==========================================
+class Student {
+public:
+    // Check Point 1 (5%): 構造函式，初始化學生基本資料與總分
+    Student(string name, int student_id, int math_score, int english_score) {
+        this->name = name;
+        this->student_id = student_id;
+        this->math_score = math_score;
+        this->english_score = english_score;
+        this->total_score = math_score + english_score; // 自動計算總分
+    }
+    
+    // 學生屬性（資料成員）
+    string name;
+    int student_id;
+    int math_score;
+    int english_score;
+    int total_score;
+
+    // Check Point 3 (5%): 虛擬函式 (virtual)，允許衍生類別進行覆寫 (Override) 以實作動態多型
+    virtual void print() {
+        cout << "Name: " << name << endl;
+        cout << "Student ID: " << student_id << endl;
+        cout << "Math Score: " << math_score << endl;
+        cout << "English Score: " << english_score << endl;
+        cout << "Total Score: " << total_score << endl;
+    }
+};
+
+// ==========================================
+// 獨立函式：選擇排序法 (Selection Sort)
+// ==========================================
+// Check Point 2 (55%): 透過「學生學號 (student_id)」由小到大排序學生陣列
+void mySort(vector<Student> & students) {
+    for (int i = 0; i < students.size(); i++) {
+        int minIndex = i; // 記錄目前未排序區段中的最小值索引
+        for (int j = i + 1; j < students.size(); j++) {
+            // 如果找到更小的學號，更新最小值索引
+            if (students[j].student_id < students[minIndex].student_id) {
+                minIndex = j;
+            }
+        }
+        // 如果最小值索引改變，則與目前位置 i 的元素交換
+        if (minIndex != i) {
+            Student t = students[i];
+            students[i] = students[minIndex];
+            students[minIndex] = t;
+        }
+    }
+}
+
+// ==========================================
+// 衍生類別：高中生 (HighSchoolStudent)
+// ==========================================
+// Check Point 4 (5%): 繼承自 Student 類別
+class HighSchoolStudent: public Student {
+public:
+    // 構造函式：利用初始化列表呼叫基礎類別的構造函式
+    HighSchoolStudent(string name, int student_id, int math_score, int english_score):
+        Student(name, student_id, math_score, english_score) {
+    }
+    string highschool_name; // 高中名稱成員（此範例暫未初始化）
+    
+    // 覆寫 print() 函式，額外輸出 Category 資訊
+    void print() override {
+        cout << "Name: " << name << endl;
+        cout << "Student ID: " << student_id << endl;
+        cout << "Category: " << "HighSchoolStudent" << endl;
+        cout << "Math Score: " << math_score << endl;
+        cout << "English Score: " << english_score << endl;
+        cout << "Total Score: " << total_score << endl;
+    }
+};
+
+// ==========================================
+// 衍生類別：大學生 (CollegeStudent)
+// ==========================================
+// Check Point 4 (5%): 繼承自 Student 類別
+class CollegeStudent: public Student {
+public:
+    // 構造函式：利用初始化列表呼叫基礎類別的構造函式
+    CollegeStudent(string name, int student_id, int math_score, int english_score):
+        Student(name, student_id, math_score, english_score) {
+    }
+    string college_name; // 大學名稱成員（此範例暫未初始化）
+    
+    // 覆寫 print() 函式，額外輸出 Category 資訊
+    void print() override {
+        cout << "Name: " << name << endl;
+        cout << "Student ID: " << student_id << endl;
+        cout << "Category: " << "CollegeStudent" << endl;
+        cout << "Math Score: " << math_score << endl;
+        cout << "English Score: " << english_score << endl;
+        cout << "Total Score: " << total_score << endl;
+    }
+};
+
+// ==========================================
+// 排序比較用仿函式 (Functor)
+// ==========================================
+class TotalScoreCmp {
+public:
+    // 多載 () 運算子，比較兩個學生智慧指標的「總分」大小
+    bool operator()(shared_ptr<Student> s1, shared_ptr<Student> s2) {
+        return s1->total_score < s2->total_score; 
+    }
+};
+
+// ==========================================
+// 管理類別：學生管理系統 (StudentManager)
+// ==========================================
+class StudentManager {
+public:
+    // 使用 shared_ptr 儲存學生，用來支援多型並自動管理記憶體
+    vector<shared_ptr<Student>> students;
+    
+    // Check Point 5 (5%): 新增學生，並檢查學號是否重複
+    void addStudent(shared_ptr<Student> s) {
+        for (int i = 0; i < students.size(); i++) {
+            // 若學號已存在，則放棄加入，確保學號唯一性
+            if (students[i]->student_id == s->student_id) {
+                return;
+            }
+        }
+        students.push_back(s);
+    }
+    
+    // Check Point 6 (5%): 遍歷並呼叫每個學生的 print() 函式
+    void printStudents() {
+        for (int i = 0; i < students.size(); i++) {
+            students[i]->print(); // 這裡會根據物件實際型態發揮「多型」效果
+        }
+    }
+    
+    // Check Point 7 (5%): 使用仿函式 (TotalScoreCmp) 依總分從小到大排序
+    void sortByTotalScore() {
+        TotalScoreCmp cmp;
+        sort(students.begin(), students.end(), cmp);
+    }
+
+    // Check Point 8 (5%): 使用 Lambda 運算式進行多條件排序
+    void sortByMathScoreThenEnglishScore() {
+        sort(students.begin(), students.end(),
+            [](shared_ptr<Student> s1, shared_ptr<Student> s2) {
+                // 優先比較數學分數
+                if (s1->math_score < s2->math_score) {
+                    return true;
+                } 
+                // 若數學分數相同，則比較英文分數
+                else if (s1->math_score == s2->math_score &&
+                         s1->english_score < s2->english_score) {
+                    return true;
+                }
+                return false;
+            });
+    }
+};
+
+// ==========================================
+// 主程式進入點 (main)
+// ==========================================
+int main() {
+
+    // --- 第一部分：測試自訂的選擇排序法 (mySort) ---
+    // Check Point 2 (55%): 建立未排序的學生 vector
+    vector<Student> students = {
+        Student("John", 5, 90, 80),
+        Student("Bob", 3, 95, 85),
+        Student("Jeff", 2, 85, 70)
+    };
+    
+    mySort(students); // 執行排序（依學號 2 -> 3 -> 5）
+    
+    // 印出排序後的基礎學生資料
+    for (int i = 0; i < students.size(); i++) {
+        students[i].print();
+    }
+
+    cout << "-----------------------------------" << endl;
+
+    // --- 第二部分：測試學生管理系統與多型 ---
+    StudentManager manager;
+    
+    // 建立高中生與大學生物件
+    HighSchoolStudent student0 = HighSchoolStudent("Wang", 6, 100, 100);
+    HighSchoolStudent student1 = HighSchoolStudent("Wang", 8, 80, 80);
+    CollegeStudent student2 = CollegeStudent("Lin", 7, 90, 90);
+    CollegeStudent student3 = CollegeStudent("Kobayashi", 7, 90, 90); // 學號 7 與 Lin 重複
+    
+    // 【重要提示】這裡原程式碼使用 make_shared<Student>(student0) 會發生「物件截斷 (Slicing)」
+    // 它只複製了基礎類別 Student 的部分，導致後續無法觸發 HighSchoolStudent 的 print()。
+    manager.addStudent(make_shared<Student>(student0));
+    manager.addStudent(make_shared<Student>(student1));
+    manager.addStudent(make_shared<Student>(student2));
+    
+    // Check Point 9 (5%): 因為 Kobayashi 的學號是 7，與 Lin 重複，所以不會被加入
+    manager.addStudent(make_shared<Student>(student3));
+    
+    // Check Point 10 (5%): 執行排序並輸出結果
+    // manager.sortByTotalScore(); // 依總分排序（已被註解）
+    manager.sortByMathScoreThenEnglishScore(); // 依數學、英文分數排序
+    
+    manager.printStudents(); // 列印管理系統內的所有學生
+    
+    return 0;
+}

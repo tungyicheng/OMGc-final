@@ -1,0 +1,94 @@
+#include <iostream>
+#include <vector>
+#include <functional>
+#include <string>
+
+using namespace std;
+
+struct Date2026 {
+    int m, d;
+
+    // 計算該日期是 2026 年的第幾天
+    int dayOfYear() const {
+        int days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int total = 0;
+        for (int i = 0; i < m - 1; i++) {
+            total += days[i];
+        }
+        return total + d;
+    }
+
+    // 計算星期幾（2026年1月1日是星期四）
+    string dayOfWeek() const {
+        int dow = (4 + dayOfYear() - 1) % 7;
+        string names[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+        return names[dow];
+    }
+
+    // 取得月份名稱
+    string monthName() const {
+        string months[] = {"January", "February", "March", "April", "May", "June",
+                           "July", "August", "September", "October", "November", "December"};
+        return months[m - 1];
+    }
+
+    // 轉換為易讀的字串格式
+    string toString() const {
+        return dayOfWeek() + ", " + monthName() + " " + to_string(d) + ", 2026";
+    }
+};
+
+// 篩選日期的函式
+void filterDates(vector<Date2026>& dates, const function<bool(Date2026)>& condition) {
+    vector<Date2026> result;
+    for (const auto& date : dates) {
+        if (condition(date)) {
+            result.push_back(date);
+        }
+    }
+    dates = result;
+}
+
+int main() {
+    // 最佳化標準輸入輸出效能
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int filterType, filterValue;
+    if (!(cin >> filterType >> filterValue)) return 0;
+
+    vector<Date2026> dates;
+    int m, d;
+    while (cin >> m >> d) {
+        dates.push_back({m, d});
+    }
+
+    // 定義星期名稱，供後續篩選比對使用
+    string names[] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+    if (filterType == 1) {
+        // 篩選特定月份
+        filterDates(dates, [filterValue](Date2026 date) {
+            return date.m == filterValue;
+        });
+    } 
+    else if (filterType == 2) {
+        // 篩選特定星期幾（改為值捕獲 filterValue，避免生命週期問題）
+        filterDates(dates, [filterValue, names](Date2026 date) {
+            return date.dayOfWeek() == names[filterValue - 1];
+        });
+    } 
+    else if (filterType == 3) {
+        // 篩選大於特定累積天數的日期
+        filterDates(dates, [filterValue](Date2026 d) {
+            return d.dayOfYear() > filterValue;
+        });
+    }
+
+    // 輸出結果
+    for (const auto& date : dates) {
+        cout << date.toString() << "\n"; // 使用 \n 代替 endl 提升效能
+    }
+
+    return 0;
+}
