@@ -4,7 +4,7 @@ void HI()
 {
     cout<<"HI"<<endl;
 }
-void SAY( void func())
+void SAY( void (*func)())
 {
     func();
 }
