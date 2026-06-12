@@ -13,3 +13,5 @@ https://hackmd.io/@QuiZXGtvQF6Xkfn4bIRkHQ/HJFFjnuZGe
 https://hackmd.io/@QuiZXGtvQF6Xkfn4bIRkHQ/rk5pOnO-Mx
 
 https://hackmd.io/@QuiZXGtvQF6Xkfn4bIRkHQ/H1U9UidZGx
+被炸爛所以補這個來拯救一下下午的
+https://hackmd.io/@QuiZXGtvQF6Xkfn4bIRkHQ/rknAt-KWGx
